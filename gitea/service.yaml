@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gitea-service
+spec:
+  selector:
+    app: gitea
+  type: LoadBalancer
+  externalIPs:
+    - 192.168.99.100 # replace with minikube ip 
+  ports:
+    - name: gitea-http
+      protocol: "TCP"
+      port: 3000
+      targetPort: gitea-http
+      nodePort: 30000
+    - name: gitea-ssh
+      protocol: "TCP"
+      port: 2222
+      targetPort: gitea-ssh
+      nodePort: 30002

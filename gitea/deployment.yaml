@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea-deployment
+  labels:
+    app: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      containers:
+        - name: gitea
+          image: gitea/gitea:latest
+          ports:
+            - containerPort: 3000
+              name: gitea-http
+            - containerPort: 22
+              name: git-ssh
+          volumeMounts:
+            - name: nfs
+              mountPath: /data
+      volumes:
+        - name: nfs
+          nfs:
+            server: 10.96.108.207
+            path: /
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: gitea-deployment
+#   labels:
+#     app: gitea
+
+# spec:
+#   replicas: 2
+  
+#   selector:
+#     matchLabels:
+#       app: gitea
+  
+#   template:
+#     metadata:
+#       labels:
+#         app: gitea
+    
+#     spec:
+     
+#       # Add the server as an NFS volume for the pod
+#       volumes:
+#         - name: git-data
+#           nfs: 
+#             # URL for the NFS server
+#             server: 10.96.108.207
+#             path: /
+      
+#       containers:
+#         - name: gitea
+#           image: gitea/gitea:latest
+          
+#           ports:
+#             - containerPort: 3000
+#               name: gitea
+#             - containerPort: 22
+#               name: git-ssh
+          
+#           volumeMounts:
+#             - name: git-data
+#               mountPath: /data
+      
+
+
+# kind: Pod
+# apiVersion: v1
+# metadata:
+#   name: pod-using-nfs
+# spec:
+#   # Add the server as an NFS volume for the pod
+#   volumes:
+#     - name: nfs-volume
+#       nfs: 
+#         # URL for the NFS server
+#         server: 10.96.108.207
+#         path: /
+
+#   # In this container, we'll mount the NFS volume
+#   # and write the date to a file inside it.
+#   containers:
+#     - name: app
+#       image: alpine
+
+#       # Mount the NFS volume in the container
+#       volumeMounts:
+#         - name: nfs-volume
+#           mountPath: /var/nfs
+
+#       # Write to a file inside our NFS
+#       command: ["/bin/sh"]
+#       args: ["-c", "while true; do date >> /var/nfs/dates.txt; sleep 5; done"]
+      
